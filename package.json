@@ -15,6 +15,7 @@
     "irc": "^0.3.9",
     "irc-colors": "^1.1.0",
     "moment": "^2.8.4",
+    "nodegit": "^0.2.7",
     "numeral": "^1.5.3",
     "octonode": "^0.6.13",
     "request": "^2.51.0",
