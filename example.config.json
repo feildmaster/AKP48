@@ -93,7 +93,6 @@
     },
     "git": {
         "autoUpdate": false, // Whether or not to automatically update to the latest code.
-        "announceChanges": false, // Announce changes to AKP48. To enable, set this variable to the name of a channel.
         "listenForChanges": false, // Whether or not to even listen for push events.
         "port": 4269, // The port to listen for git push events on.
         "repository": "AKPWebDesign/AKP48", // The repository to listen for.
