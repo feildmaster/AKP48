@@ -30,6 +30,8 @@ var log = bunyan.createLogger({
     }]
 });
 
+log.info("Starting server.");
+
 var ClientManager = require('./ClientManager');
 
 log.info("Initializing polyfill.");
