@@ -77,7 +77,7 @@ AutoResponseProcessor.prototype.executeAll = function(context) {
                 //if the handler's regex matches, execute handler.
                 if(things[i].search(this.handlers[property].regex) != -1) {
                         this.handlers[property].execute(things[i], context);
-                        log.info("AutoResponse handler executed: ", {user: context.getUser(), command: this.handlers[property].name, fullMsg: context.getFullMessage()});
+                        log.info({user: context.getUser().getNick(), handler: this.handlers[property].name, fullMsg: context.getFullMessage()}, "AutoResponse handler executed.");
                         responses++;
                 }
             }
