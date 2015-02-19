@@ -30,76 +30,8 @@ var log = bunyan.createLogger({
     }]
 });
 
-var config = require("../config.json");
-var GitHooks = require("githubhook");
-
 function Git() {
-
-    //port to listen on
-    this.port = 4269;
-
-    //path to listen at
-    this.path = "/github/callback";
-
-    //secret to use
-    this.secret = "";
-
-    //repo to listen for
-    this.repository = "AKP48";
-
-    //branch to listen for
-    this.branch = "master";
-
-    //listener
-    this.githubListener = null;
-
-    //if there is a git configuration, set all options
-    if(config.git) {
-        if(config.git.port) {
-            this.port = config.git.port;
-        }
-
-        if(config.git.path) {
-            this.path = config.git.path;
-        }
-
-        if(config.git.secret) {
-            this.secret = config.git.secret;
-        }
-
-        if(config.git.repository) {
-            this.repository = config.git.repository;
-        }
-
-        if(config.git.branch) {
-            this.branch = config.git.branch;
-        }
-    }
-
-    //if listening for changes is allowed, set up listener.
-    if(config.git.listenForChanges) {
-
-        log.info({repo: this.repository, port: this.port, branch: this.branch}, "Initializing GitHub Webhook listener");
-
-        this.githubListener = GitHooks({
-            path: this.path,
-            port: this.port,
-            secret: this.secret
-        });
-
-        this.githubListener.listen();
-
-        if(this.branch !== "*") {
-            this.githubListener.on("push:"+this.repository+":"+this.branch, function (data) {
-                log.info({payload: data}, "GitHub Webhook received.");
-            });
-        } else {
-            this.githubListener.on("push:"+this.repository, function (ref, data) {
-                log.info({payload: data, ref: ref}, "GitHub Webhook received.");
-            });
-        }
-
-    }
+    //TODO: things.
 }
 
 /**

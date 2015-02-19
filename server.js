@@ -33,6 +33,7 @@ var log = bunyan.createLogger({
 log.info("Starting server.");
 
 var ClientManager = require('./ClientManager');
+var GitListener = require('./GitListener');
 
 log.info("Initializing polyfill.");
 require('./polyfill.js')();
@@ -40,8 +41,11 @@ require('./polyfill.js')();
 log.info("Loading configuration.");
 var config = require('./config.json');
 
-log.info("Creating ClientManager.");
+log.info("Creating Client Manager.");
 var clientmanager = new ClientManager(config);
+
+log.info("Creating Git Listener");
+var gitListener = new GitListener(this);
 
 //todo: better exception handling plz
 if(config.productionMode) {
