@@ -55,8 +55,10 @@ function ClientManager(config) {
 ClientManager.prototype.loadClients = function(config) {
     log.info("Loading client information...");
     for (i in config.servers) {
-        var server = config.servers[i];
-        this.addClient(Client.build(server));
+        if(config.servers.hasOwnProperty(i)) {
+            var server = config.servers[i];
+            this.addClient(Client.build(server));
+        }
     };
 };
 
