@@ -92,8 +92,8 @@
         // See https://api.imgur.com/ for more information on getting imgur API authorization.
     },
     "git": {
-        "autoUpdate": false, // Whether or not to automatically update to the latest code.
         "listenForChanges": false, // Whether or not to even listen for push events.
+        "autoUpdate": false, // Whether or not to automatically update to the latest code.
         "port": 4269, // The port to listen for git push events on.
         "repository": "AKP48", // The repository to listen for.
         "branch": "master", // The branch to listen for.
