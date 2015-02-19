@@ -90,13 +90,17 @@ function GitListener() {
         this.githubListener.listen();
 
         if(this.branch !== "*") {
-            this.githubListener.on("push:"+this.repository+":"+this.branch, function (data) {
-                log.info({head_commit_message: data.head_commit.message, compare_link: data.compare}, "GitHub Webhook received.");
-            });
+            this.githubListener.on("push:"+this.repository+":"+this.branch, pushBranch);
         } else {
-            this.githubListener.on("push:"+this.repository, function (ref, data) {
-                log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
-            });
+            this.githubListener.on("push:"+this.repository, pushRepo);
+        }
+
+        function pushBranch(data) {
+            log.info({head_commit_message: data.head_commit.message, compare_link: data.compare}, "GitHub Webhook received.");
+        }
+
+        function pushRepo(ref, data) {
+            log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
         }
     }
 }
