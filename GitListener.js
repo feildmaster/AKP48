@@ -104,6 +104,9 @@ GitListener.prototype.handle = function (branch, data) {
         return;
     }
     
+    // TODO: stop only if needed!!
+    var shutdown = true;
+    
     log.info("Updating to branch: " + branch);
     // Fetch, reset
     if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
@@ -112,8 +115,6 @@ GitListener.prototype.handle = function (branch, data) {
     // TODO: npm install if *needed*
     exec('npm install');
 
-    // TODO: stop only if needed!!
-    var shutdown = true;
     if (shutdown) {
         manager.shutdown("Restarting due to update.");
     } else {
