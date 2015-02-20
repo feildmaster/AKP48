@@ -58,6 +58,22 @@ function Polyfill() {
     }
   }
 
+  if (!String.prototype.prepend) {
+    // Prepend only if str is not empty
+    String.prototype.prepend = function(text) {
+      var str = this.toString();
+      return str ? text+str : str;
+    }
+  }
+
+  if (!String.prototype.append) {
+    // Append only if str is not empty
+    String.prototype.append = function(text) {
+      var str = this.toString();
+      return str ? str+text : str;
+    }
+  }
+
   if (!Array.prototype.randomElement) {
     var chance = new (require('chance'));
     Array.prototype.randomElement = function(low, high) {
