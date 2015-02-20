@@ -79,11 +79,11 @@ function GitListener(clientmanager) {
         if (config.git.autoUpdate) {
             this.autoUpdate = config.git.autoUpdate;
         }
-    }
 
-    //if listening for changes is allowed, set up listener.
-    if(config.git.listenForChanges) {
-        this.startListening();
+        //if listening for changes is allowed, set up listener.
+        if(config.git.listenForChanges) {
+            this.startListening();
+        }
     }
 }
 
@@ -103,25 +103,20 @@ GitListener.prototype.startListening = function() {
 
     this.githubListener.listen();
 
-    if(this.branch !== "*") {
-        this.githubListener.on("push:"+this.repository+":"+this.branch, this.pushBranch);
-    } else {
-        this.githubListener.on("push:"+this.repository, this.pushRepo);
-    }
+    this.githubListener.on("push:"+this.repository, this.pushRepo);
 }
-
-GitListener.prototype.pushBranch = function (data) {
-    this.pushRepo(this.branch, data);
-};
 
 GitListener.prototype.pushRepo = function (ref, data) {
     log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
-    this.handle(ref.substring(ref.lastIndexOf('/') + 1), data);
+    var branch = ref.substring(ref.lastIndexOf('/') + 1);
+    if (this.branch === "*" || this.branch === branch) {
+        this.handle(branch, data);
+    }
 };
 
 GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
-    var update = this.update;
+    var update = this.autoUpdate;
     if (update) {
         log.info("Updating to branch: " + branch);
         // Fetch, reset
@@ -134,15 +129,14 @@ GitListener.prototype.handle = function (branch, data) {
     // Alert channels of update
     var message = "Something was pushed. Perhaps later, I'll actually tell you what it was.";
     manager.clients.forEach(function (client) {
-        if (client.alert) {
-            client.alert.forEach(function (channel) {
-                client.getIRCClient().say(channel, message);
-            });
-        }
+        client.alert.forEach(function (channel) {
+            client.getIRCClient().say(channel, message);
+        });
     });
     if (update) {
-        if (true) {
-            // TODO: stop if needed!!
+        // TODO: stop only if needed!!
+        var shutdown = true;
+        if (shutdown) {
             manager.shutdown("Restarting due to update.");
         } else {
             // reload

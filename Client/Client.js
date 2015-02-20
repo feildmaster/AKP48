@@ -77,6 +77,9 @@ function Client() {
 
     // Magic 'color' that represents a bot message
     this.botID = "\u000399";
+
+    // Channels to alert on update
+    this.alert = [];
 }
 
 /**
