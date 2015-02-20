@@ -45,7 +45,7 @@ log.info("Creating Client Manager.");
 var clientmanager = new ClientManager(config);
 
 log.info("Creating Git Listener");
-var gitListener = new GitListener(this);
+var gitListener = new GitListener(clientmanager);
 
 //todo: better exception handling plz
 if(config.productionMode) {

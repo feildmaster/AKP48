@@ -33,7 +33,8 @@ var log = bunyan.createLogger({
 var config = require("./config.json");
 var GitHooks = require("githubhook");
 
-function GitListener() {
+function GitListener(clientmanager) {
+    this.manager = clientmanager;
 
     //port to listen on
     this.port = 4269;
@@ -74,34 +75,62 @@ function GitListener() {
         if(config.git.branch) {
             this.branch = config.git.branch;
         }
+
+        if (config.git.autoUpdate) {
+            this.autoUpdate = config.git.autoUpdate;
+        }
     }
 
     //if listening for changes is allowed, set up listener.
     if(config.git.listenForChanges) {
+        this.startListening();
+    }
+}
 
-        log.info({repo: this.repository, port: this.port, branch: this.branch}, "Initializing GitHub Webhook listener");
+Git.prototype.startListening = function() {
+    if (this.githubListener) {
+        log.error("Attempted to listen while already listening.");
+        return;
+    }
 
-        this.githubListener = GitHooks({
-            path: this.path,
-            port: this.port,
-            secret: this.secret
-        });
+    log.info({repo: this.repository, port: this.port, branch: this.branch}, "Initializing GitHub Webhook listener");
 
-        this.githubListener.listen();
+    this.githubListener = GitHooks({
+        path: this.path,
+        port: this.port,
+        secret: this.secret
+    });
 
-        if(this.branch !== "*") {
-            this.githubListener.on("push:"+this.repository+":"+this.branch, pushBranch);
-        } else {
-            this.githubListener.on("push:"+this.repository, pushRepo);
-        }
+    this.githubListener.listen();
 
-        function pushBranch(data) {
-            log.info({head_commit_message: data.head_commit.message, compare_link: data.compare}, "GitHub Webhook received.");
-        }
+    if(this.branch !== "*") {
+        this.githubListener.on("push:"+this.repository+":"+this.branch, pushBranch);
+    } else {
+        this.githubListener.on("push:"+this.repository, pushRepo);
+    }
+}
 
-        function pushRepo(ref, data) {
-            log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
-        }
+function pushBranch(data) {
+    log.info({head_commit_message: data.head_commit.message, compare_link: data.compare}, "GitHub Webhook received.");
+    handle(this.branch, data);
+}
+
+function pushRepo(ref, data) {
+    log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
+    handle(ref.substring(ref.lastIndexOf('/') + 1), data);
+}
+
+function handle(branch, data) {
+    var update = this.autoUpdate;
+    if (update) {
+        log.info("Updating to branch: " + branch);
+        // Fetch, reset
+        // npm install if needed
+    }
+    // irc notice
+    if (update) {
+        // reload
+        // stop if needed
     }
 }
 
