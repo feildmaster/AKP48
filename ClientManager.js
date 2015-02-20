@@ -32,6 +32,7 @@ var log = bunyan.createLogger({
 
 var Client = require("./Client/Client");
 var Builder = require("./Client/Builder");
+var GitListener = require('./GitListener');
 
 /**
  * The ClientManager.
@@ -46,6 +47,9 @@ function ClientManager(config) {
 
     //builder
     this.builder = new Builder();
+
+    log.info("Creating Git Listener");
+    this.gitListener = new GitListener(this);
 }
 
 /**
