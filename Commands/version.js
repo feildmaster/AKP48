@@ -45,7 +45,7 @@ function Version() {
 
 Version.prototype.execute = function(context) {
     var version = require('../package.json').version;
-    var gitSHA = this.git.getLatestCommit().substring(0, 7);
+    var gitSHA = this.git.getCommit().substring(0, 7);
     var gitBranch = this.git.getBranch();
     var gitTag = this.git.getTag();
 
