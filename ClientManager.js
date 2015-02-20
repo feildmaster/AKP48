@@ -72,6 +72,10 @@ ClientManager.prototype.addClient = function(client) {
     this.clients.push(client);
 };
 
+ClientManager.prototype.softReload = function() {
+    // TODO: move functionality of .reload here
+};
+
 /**
  * Reload the CommandProcessor in each Client that this ClientManager manages.
  */

@@ -104,34 +104,51 @@ Git.prototype.startListening = function() {
     this.githubListener.listen();
 
     if(this.branch !== "*") {
-        this.githubListener.on("push:"+this.repository+":"+this.branch, pushBranch);
+        this.githubListener.on("push:"+this.repository+":"+this.branch, this.pushBranch;
     } else {
-        this.githubListener.on("push:"+this.repository, pushRepo);
+        this.githubListener.on("push:"+this.repository, this.pushRepo);
     }
 }
 
-function pushBranch(data) {
-    log.info({head_commit_message: data.head_commit.message, compare_link: data.compare}, "GitHub Webhook received.");
-    handle(this.branch, data);
-}
+Git.prototype.pushBranch = function (data) {
+    this.pushRepo(this.branch, data);
+};
 
-function pushRepo(ref, data) {
+Git.prototype.pushRepo = function (ref, data) {
     log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
-    handle(ref.substring(ref.lastIndexOf('/') + 1), data);
-}
+    this.handle(ref.substring(ref.lastIndexOf('/') + 1), data);
+};
 
-function handle(branch, data) {
-    var update = this.autoUpdate;
+Git.prototype.handle = function (branch, data) {
+    var manager = this.manager;
+    var update = this.update;
     if (update) {
         log.info("Updating to branch: " + branch);
         // Fetch, reset
-        // npm install if needed
+        if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
+            log.error("Attempted git fetch & reset failed!");
+        }
+        // TODO: npm install if *needed*
+        exec('npm install');
     }
-    // irc notice
+    // Alert channels of update
+    var message = "Something was pushed. Perhaps later, I'll actually tell you what it was.";
+    manager.clients.forEach(function (client) {
+        if (client.alert) {
+            client.alert.forEach(function (channel) {
+                client.getIRCClient().say(channel, message);
+            });
+        }
+    });
     if (update) {
-        // reload
-        // stop if needed
+        if (true) {
+            // TODO: stop if needed!!
+            manager.shutdown("Restarting due to update.");
+        } else {
+            // reload
+            manager.softReload();
+        }
     }
-}
+};
 
 module.exports = GitListener;
