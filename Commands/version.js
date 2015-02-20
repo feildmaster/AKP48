@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Git = require("../API/git")
+var Git = require("../API/git");
 
 function Version() {
     //the name of the command.
@@ -46,8 +46,14 @@ function Version() {
 Version.prototype.execute = function(context) {
     var version = require('../package.json').version;
     var gitSHA = this.git.getLatestCommit().substring(0, 7);
+    var gitBranch = this.git.getBranch();
+    var gitTag = this.git.getTag();
+
+    var tagOrBranch = (gitBranch || gitTag);
 
     if(gitSHA !== "") {version = version + "-" + gitSHA;}
+    if(tagOrBranch !== "") {version = version + "/" + tagOrBranch;}
+    
 
     context.getClient().say(context, "v"+version);
 

@@ -30,6 +30,8 @@ var log = bunyan.createLogger({
     }]
 });
 
+var getRepoInfo = require('git-repo-info');
+
 function Git() {
     //TODO: things.
 }
@@ -42,18 +44,27 @@ Git.prototype.fetch = function() {
 };
 
 /**
- * Get latest commit hash.
- * @param  {String} branch Optional. The branch to get commit for. Defaults to master.
+ * Get commit hash.
  * @return {String}        The commit SHA.
  */
-Git.prototype.getLatestCommit = function(branch) {
-    if(!branch) {
-        branch = "master";
-    }
+Git.prototype.getCommit = function() {
+    return getRepoInfo().sha;
+};
 
-    var sha = "";
+/**
+ * Get the current branch.
+ * @return {String}        The current git branch.
+ */
+Git.prototype.getBranch = function() {
+    return getRepoInfo().branch;
+};
 
-    return sha;
+/**
+ * Get the current tag.
+ * @return {String}        The current git tag.
+ */
+Git.prototype.getTag = function() {
+    return getRepoInfo().tag;
 };
 
 module.exports = Git;
