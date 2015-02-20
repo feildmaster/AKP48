@@ -87,7 +87,7 @@ function GitListener(clientmanager) {
     }
 }
 
-Git.prototype.startListening = function() {
+GitListener.prototype.startListening = function() {
     if (this.githubListener) {
         log.error("Attempted to listen while already listening.");
         return;
@@ -104,22 +104,22 @@ Git.prototype.startListening = function() {
     this.githubListener.listen();
 
     if(this.branch !== "*") {
-        this.githubListener.on("push:"+this.repository+":"+this.branch, this.pushBranch;
+        this.githubListener.on("push:"+this.repository+":"+this.branch, this.pushBranch);
     } else {
         this.githubListener.on("push:"+this.repository, this.pushRepo);
     }
 }
 
-Git.prototype.pushBranch = function (data) {
+GitListener.prototype.pushBranch = function (data) {
     this.pushRepo(this.branch, data);
 };
 
-Git.prototype.pushRepo = function (ref, data) {
+GitListener.prototype.pushRepo = function (ref, data) {
     log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
     this.handle(ref.substring(ref.lastIndexOf('/') + 1), data);
 };
 
-Git.prototype.handle = function (branch, data) {
+GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
     var update = this.update;
     if (update) {
