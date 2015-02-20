@@ -92,32 +92,32 @@ GitListener.prototype.pushRepo = function (ref, data) {
 
 GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
-    var update = this.autoUpdate;
-    if (update) {
-        log.info("Updating to branch: " + branch);
-        // Fetch, reset
-        if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
-            log.error("Attempted git fetch & reset failed!");
-        }
-        // TODO: npm install if *needed*
-        exec('npm install');
-    }
     // Alert channels of update
-    var message = "Something was pushed. Perhaps later, I'll actually tell you what it was.";
+    var message = "["+branch+"] Something was pushed. Perhaps later, I'll actually tell you what it was.";
     manager.clients.forEach(function (client) {
         client.alert.forEach(function (channel) {
             client.getIRCClient().say(channel, message);
         });
     });
-    if (update) {
-        // TODO: stop only if needed!!
-        var shutdown = true;
-        if (shutdown) {
-            manager.shutdown("Restarting due to update.");
-        } else {
-            // reload
-            manager.softReload();
-        }
+    
+    if (!this.autoUpdate) {
+        return;
+    }
+    
+    log.info("Updating to branch: " + branch);
+    // Fetch, reset
+    if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
+        log.error("Attempted git fetch & reset failed!");
+    }
+    // TODO: npm install if *needed*
+    exec('npm install');
+
+    // TODO: stop only if needed!!
+    var shutdown = true;
+    if (shutdown) {
+        manager.shutdown("Restarting due to update.");
+    } else {
+        manager.softReload();
     }
 };
 
