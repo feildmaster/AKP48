@@ -36,54 +36,30 @@ var GitHooks = require("githubhook");
 function GitListener(clientmanager) {
     this.manager = clientmanager;
 
-    //port to listen on
-    this.port = 4269;
-
-    //path to listen at
-    this.path = "/github/callback";
-
-    //secret to use
-    this.secret = "";
-
-    //repo to listen for
-    this.repository = "AKP48";
-
-    //branch to listen for
-    this.branch = "master";
-
     //listener
     this.githubListener = null;
 
-    //if there is a git configuration, set all options
-    if(config.git) {
-        if(config.git.port) {
-            this.port = config.git.port;
-        }
+    var git = config.git;
 
-        if(config.git.path) {
-            this.path = config.git.path;
-        }
+    //port to listen on
+    this.port = (git && git.port) ? git.port : 4269;
 
-        if(config.git.secret) {
-            this.secret = config.git.secret;
-        }
+    //path to listen at
+    this.path = (git && git.path) ? git.path : "/github/callback";
 
-        if(config.git.repository) {
-            this.repository = config.git.repository;
-        }
+    //secret to use
+    this.secret = (git && git.secret) ? git.secret : "";
 
-        if(config.git.branch) {
-            this.branch = config.git.branch;
-        }
+    //repo to listen for
+    this.repository = (git && git.repository) ? git.repository : "AKP48";
 
-        if (config.git.autoUpdate) {
-            this.autoUpdate = config.git.autoUpdate;
-        }
+    //branch to listen for
+    this.branch = (git && git.branch) ? git.branch : "master";
 
-        //if listening for changes is allowed, set up listener.
-        if(config.git.listenForChanges) {
-            this.startListening();
-        }
+    this.autoUpdate = (git && git.autoUpdate);
+
+    if(git && git.listenForChanges) {
+        this.startListening();
     }
 }
 
