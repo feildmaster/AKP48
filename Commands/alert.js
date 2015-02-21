@@ -42,11 +42,10 @@ function Alert() {
 }
 
 Alert.prototype.execute = function(context) {
-    context.getClient().say(context, "Client.alert: " + context.getClient().alert.join(", "));
     var results = [];
 
     function _add(channel) {
-        channel = channel || context.getChannel();
+        channel = channel || context.getChannel().name;
         var index = _index(channel);
         if (!index) {
             context.getClient().alert.push(channel);
@@ -54,7 +53,7 @@ Alert.prototype.execute = function(context) {
         }
     }
     function _remove(channel) {
-        channel = channel || context.getChannel();
+        channel = channel || context.getChannel().name;
         var index = _index(channel);
         if (index) {
             context.getClient().alert.splice(index, 1);
