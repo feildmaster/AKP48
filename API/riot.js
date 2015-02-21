@@ -60,11 +60,9 @@ Riot.prototype.getChampList = function() {
     var self = this;
     log.info("Retrieving champion list from Riot.");
     this.client.get('/api/lol/static-data/na/v1.2/champion?api_key='+this.api_key, function(err, res, body) {
-        for (var property in body.data) {
-            if (body.data.hasOwnProperty(property)) {
-                self.champions[body.data[property].id] = body.data[property];
-            }
-        }
+        body.data.forEach(function (data) {
+            self.champions[data.id] = data;
+        });
     });
 };
 
@@ -74,10 +72,10 @@ Riot.prototype.getFreeChamps = function(callback) {
         this.freeChamps = { champions: [], lastAccess: m() };
         var self = this;
         this.client.get('/api/lol/na/v1.2/champion?freeToPlay=true&api_key='+this.api_key, function(err, res, body) {
-            if(err) {log.error(err); return;}
-            for (var i = 0; i < body.champions.length; i++) {
-                self.freeChamps.champions.push(self.champions[body.champions[i].id].name);
-            };
+            if(err) {return log.error(err);}
+            body.champions.forEach(function (champ) {
+                self.freeChamps.champions.push(self.champions[champ.id].name);
+            });
 
             callback(self.freeChamps.champions.join(" | "));
         });
@@ -95,17 +93,15 @@ Riot.prototype.getServerStatus = function(region, callback) {
     this.client.get('http://status'+extra+'.leagueoflegends.com/shards/'+region.toLowerCase(), function(err, res, body) {
         if(err) {callback("Could not get server status for that region!"); log.error(err); return;}
         var response = [];
-        for (var property in body.services) {
-            if (body.services.hasOwnProperty(property)) {
-                var oS = body.services[property].name + ": " + body.services[property].status;
-                if(body.services[property].status === "online") {
-                    oS = c.green(oS);
-                } else {
-                    oS = c.red(oS);
-                }
-                response.push(oS);
+        body.services.forEach(function (service) {
+            var oS = service.name + ": " + service.status;
+            if(service.status === "online") {
+                oS = c.green(oS);
+            } else {
+                oS = c.red(oS);
             }
-        }
+            response.push(oS);
+        });
 
         callback(body.name + ": " + response.join(" | "));
     });
