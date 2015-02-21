@@ -341,14 +341,14 @@ Client.prototype.initialize = function(clientManager, holdIRCClient) {
     });
     
     var botID = this.botID;
-    this.ircClient._speak = function(kind, target, text) {
-        // If the message is CTCP... filter it through
-        if (text.startsWith("\u0001")) {
-             irc.Client.prototype._speak.call(this, kind, target, text);
-        } else {
-            // prefix our messages with "botID"
-            irc.Client.prototype._speak.call(this, kind, target, botID + '\u0003' + text);
+    this.ircClient._splitLongLines = function(words, maxLen, dest) {
+        var ret = irc.Client.prototype._splitLongLines.call(this, words, maxLen-botID.length-1, dest);
+        for (i = 0; i < ret.length; i++) {
+            if (!ret[i].startsWith("\u0001")) {
+                ret[i] = botID + '\u0003' + ret[i];
+            }
         }
+        return ret;
     };
 
     log.info("Client", this.getNick(), "on", this.getServer()+":"+this.getPort(), "initialized.");
