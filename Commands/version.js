@@ -49,10 +49,10 @@ function Version() {
 }
 
 Version.prototype.execute = function(context) {
-    if (context.getArguments().length && context.getUser().hasPermission("netop.command.use")) {
+    if (context.getArguments().length > 0 && context.getUser().hasPermission("netop.command.use")) {
         context.getClient().getIRCClient().notice(context.getUser().getNick(), "Server: "+this.buildVersion());
     }
-    
+
     context.getClient().say(context, "v"+this.version);
     return true;
 };
@@ -71,6 +71,7 @@ Version.prototype.buildVersion = function() {
             version += "/".append(tagOrBranch);
         }
     }
+    return version;
 };
 
 module.exports = Version;
