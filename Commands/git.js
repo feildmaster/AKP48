@@ -23,7 +23,7 @@ function Git() {
     this.name = "Git";
 
     //help text to show for this command.
-    this.helpText = "Allows controlling of the repository this bot is ";
+    this.helpText = "Allows controlling of the repository this bot is running off.";
 
     //usage message. only include the parameters. the command name will be automatically added.
     this.usageText = "checkout <branch>";
@@ -51,9 +51,13 @@ Git.prototype.execute = function(context) {
     
     var command = context.getArguments().splice(0, 1)[0].toLowerCase();
     switch (command) {
-        case "checkout": 
-            _git.fetch();
-            _git.checkout(context.getArguments.splice(0,1)[0]);
+        case "checkout":
+            var branch = context.getArguments().splice(0,1)[0];
+            if (_git.fetch() && _git.checkout(branch)) {
+                context.getClient().getIRCClient().notice(context.nick, "Checked out ".append(branch));
+            } else {
+                context.getClient().getIRCClient().notice(context.nick, "Encountered an error while checking out ".append(branch));
+            }
             break;
         default: return false;
     }
