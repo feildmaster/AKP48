@@ -138,7 +138,7 @@ GitListener.prototype.handle = function (branch, data) {
                     npm = true;
                 }
                 return shutdown;
-            };
+            });
             return shutdown;
         });
     }
