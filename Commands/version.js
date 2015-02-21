@@ -40,10 +40,26 @@ function Version() {
     this.isPmOnly = false;
 
     // Base version
-    var version = require('../package.json').version;
+    this.version_base = require('../package.json').version;
 
     //Git API
-    var git = new Git();
+    this.git = new Git();
+
+    this.version = this.buildVersion();
+}
+
+Version.prototype.execute = function(context) {
+    if (context.getArguments().length && context.getUser().hasPermission("netop.channel.use")) {
+        context.getClient().getIRCClient().notice(context.getUser().getNick(), "Server: "+this.buildVersion());
+    }
+    
+    context.getClient().say(context, "v"+this.version);
+    return true;
+};
+
+Version.prototype.buildVersion = function() {
+    var version = this.version_base;
+    var git = this.git;
     if (git.isRepo()) {
         var gitSHA = git.getCommit().substring(0, 7);
         var tagOrBranch = git.getBranch() || git.getTag();
@@ -55,13 +71,6 @@ function Version() {
             version += "/".append(tagOrBranch);
         }
     }
-
-    this.version = version;
-}
-
-Version.prototype.execute = function(context) {
-    context.getClient().say(context, "v"+this.version);
-    return true;
 };
 
 module.exports = Version;
