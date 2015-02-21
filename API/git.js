@@ -30,6 +30,9 @@ var log = bunyan.createLogger({
     }]
 });
 
+// We need the shell
+require('shelljs/global');
+
 var getRepoInfo = require('git-repo-info');
 
 function Git() {
@@ -40,7 +43,9 @@ function Git() {
  * Fetch code from all remotes.
  */
 Git.prototype.fetch = function() {
-
+    if(exec('git fetch').code) {
+        return log.error("Attempted git fetch failed!");
+    }
 };
 
 /**
@@ -65,6 +70,21 @@ Git.prototype.getBranch = function() {
  */
 Git.prototype.getTag = function() {
     return getRepoInfo().tag;
+};
+
+Git.prototype.checkout = function(branch) {
+    if (!branch) {
+        return;
+    }
+    if (this.getBranch() === branch) {
+        if (exec('git reset -q origin/'.append(branch).append(' --hard')).code) {
+            return log.error("Attempted git reset failed!");
+        }
+    } else {
+        if (exec('git checkout -q '.append(branch)).code) {
+            return log.error("Attempted git reset failed!");
+        }
+    }
 };
 
 module.exports = Git;

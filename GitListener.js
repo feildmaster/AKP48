@@ -123,19 +123,10 @@ GitListener.prototype.handle = function (branch, data) {
     log.info("Updating to branch: ".append(branch));
     
     // Fetch
-    if(exec('git fetch').code) {
-        return log.error("Attempted git fetch failed!");
-    }
+    Git.fetch();
+
     // Reset
-    if (Git.getBranch() === branch) {
-        if (exec('git reset origin/'.append(branch).append(' --hard')).code) {
-            return log.error("Attempted git reset failed!");
-        }
-    } else {
-        if (exec('git checkout '.append(branch)).code) {
-            return log.error("Attempted git reset failed!");
-        }
-    }
+    Git.checkout(branch);
 
     // TODO: npm install if *needed*
     exec('npm install');
