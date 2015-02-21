@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// We need shell access
+require('shelljs/global');
+
 var path = require('path');
 var bunyan = require('bunyan');
 var log = bunyan.createLogger({
