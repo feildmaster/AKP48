@@ -95,10 +95,10 @@ GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
     // Alert channels of update
     var commits_string = "commit".pluralize(data.commits.length, "commits");
-    var message = c.pink("["+branch+"]") + " " + data.commits.length + " " + commits_string +  " pushed by "+data.pusher.name;
+    var message = c.pink("[GitHub]") + " " + data.commits.length + " " + commits_string +  " pushed to branch " + c.bold(branch) + " by "+data.pusher.name;
 
     for (var i = 0; i < data.commits.length; i++) {
-        message += "\r\n" + data.commits[i].author.name + ": " + data.commits[i].message;
+        message += "\r\n" + data.commits[i].author.username + ": " + data.commits[i].message;
     };
 
     manager.clients.forEach(function (client) {
