@@ -77,7 +77,38 @@ ClientManager.prototype.addClient = function(client) {
 };
 
 ClientManager.prototype.softReload = function() {
-    // TODO: move functionality of .reload here
+    //remove all sorts of cached objects from the cache
+    //starting with all commands
+    require('fs').readdirSync(__dirname).forEach(function(file) {
+        delete require.cache[require.resolve('./Commands'+file)];
+    });
+
+    //all api objects
+    require('fs').readdirSync(__dirname + '/./API/').forEach(function(file) {
+        delete require.cache[require.resolve('./API/' + file)];
+    });
+
+    //all regular expression objects
+    require('fs').readdirSync(__dirname + '/./Regex/').forEach(function(file) {
+        delete require.cache[require.resolve('./Regex/' + file)];
+    });
+
+    //all autoresponses
+    require('fs').readdirSync(__dirname + '/./AutoResponses').forEach(function(file) {
+        delete require.cache[require.resolve('./AutoResponses/' + file)];
+    });
+
+    //the command processor, autoresponse processor, and configuration file
+    delete require.cache[require.resolve('./CommandProcessor')];
+    delete require.cache[require.resolve('./AutoResponseProcessor')];
+    delete require.cache[require.resolve('./config.json')];
+
+    //and finally, the autoresponse and command loaders.
+    delete require.cache[require.resolve('./AutoResponses/')];
+    delete require.cache[require.resolve('./Commands/')];
+
+    //now we can reload all the clients.
+    this.reloadClients();
 };
 
 /**
