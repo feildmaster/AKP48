@@ -347,7 +347,7 @@ Client.prototype.initialize = function(clientManager, holdIRCClient) {
              irc.Client.prototype._speak.call(this, kind, target, text);
         } else {
             // prefix our messages with "botID"
-            irc.Client.prototype._speak.call(this, kind, target, botID + text);
+            irc.Client.prototype._speak.call(this, kind, target, botID + '\u0003' + text);
         }
     };
 
