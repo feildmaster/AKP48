@@ -75,13 +75,6 @@ CommandProcessor.prototype.initCommandAliases = function() {
             }
         }
     }
-    
-    this.commands.sort(function (a, b) {
-        if (a.name === b.name) {
-            return 0;
-        }
-        return a.name > b.name ? 1 : -1;
-    });
 
     // This loop is the one that actually adds all of the aliases for each command
     // and allows them to be executed.
