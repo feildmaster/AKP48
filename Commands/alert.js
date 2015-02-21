@@ -42,8 +42,9 @@ function Alert() {
 }
 
 Alert.prototype.execute = function(context) {
+    context.getClient().getIRCClient().say(context, "Client: " + context.getClient());
     var results = [];
-    
+
     function _add(channel) {
         channel = channel || context.getChannel();
         var index = _index(channel);
