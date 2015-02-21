@@ -33,6 +33,8 @@ var log = bunyan.createLogger({
 var config = require("./config.json");
 var GitHooks = require("githubhook");
 
+var c = require("irc-colors");
+
 function GitListener(clientmanager) {
     this.manager = clientmanager;
 
@@ -92,7 +94,13 @@ GitListener.prototype.startListening = function() {
 GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
     // Alert channels of update
-    var message = "["+branch+"] Something was pushed. Perhaps later, I'll actually tell you what it was.";
+    var commits_string = "commit".pluralize(data.commits.length, "commits");
+    var message = c.pink("["+branch+"]") + " " + data.commits.length + commits_string +  " pushed by "+data.pusher.name;
+
+    for (var i = 0; i < data.commits.length; i++) {
+        message += "\r\n" + data.commits[i].author.name + ": " + data.commits[i].message;
+    };
+
     manager.clients.forEach(function (client) {
         client.alert.forEach(function (channel) {
             client.getIRCClient().say(channel, message);

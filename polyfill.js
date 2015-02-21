@@ -96,6 +96,15 @@ function Polyfill() {
         && this.length <= 50; // Up to 50 characters
     }
   }
+
+  if (!String.prototype.pluralize) {
+    String.prototype.pluralize = function(count, plural) {
+      if (plural == null)
+        plural = this + 's';
+
+      return (count == 1 ? this : plural) 
+    }
+  }
 }
 
 module.exports = Polyfill;
