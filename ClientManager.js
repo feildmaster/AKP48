@@ -129,30 +129,34 @@ ClientManager.prototype.reloadClients = function() {
 
     //for each client, create a temporary client and delete the running one.
     for (i in this.clients) {
-        //keep a reference to the IRC client, so it doesn't disconnect.
-        tempIRCClient = this.clients[i].getIRCClient();
+        if(this.clients.hasOwnProperty(i)) {
+            //keep a reference to the IRC client, so it doesn't disconnect.
+            tempIRCClient = this.clients[i].getIRCClient();
 
-        //build a new client using the values from this client.
-        tempClient = Client.build({
-            nick: this.clients[i].getNick(),
-            realname: this.clients[i].getRealName(),
-            username: this.clients[i].getUserName(),
-            password: this.clients[i].getPassword(),
-            server: this.clients[i].getServer(),
-            port: this.clients[i].getPort(),
-            alert: this.clients[i].alert,
-            channels: this.clients[i].getChannels()
-        });
+            //build a new client using the values from this client.
+            tempClient = Client.build({
+                nick: this.clients[i].getNick(),
+                realname: this.clients[i].getRealName(),
+                username: this.clients[i].getUserName(),
+                password: this.clients[i].getPassword(),
+                server: this.clients[i].getServer(),
+                port: this.clients[i].getPort(),
+                alert: this.clients[i].alert,
+                channels: this.clients[i].getChannels()
+            });
 
-        tempClient.ircClient = tempIRCClient;
+            tempClient.ircClient = tempIRCClient;
 
-        //delete the client.
-        delete this.clients[i];
+            //delete the client.
+            delete this.clients[i];
+        }
     };
 
     //for each temporary client we created, initialize it.
     for (i in tempClients) {
-        tempClients[i].initialize(this, true);
+        if(tempClients.hasOwnProperty(i)) {
+            tempClients[i].initialize(this, true);
+        }
     }
 
     log.info("Soft reload complete.");
