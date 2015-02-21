@@ -42,7 +42,7 @@ function Alert() {
 }
 
 Alert.prototype.execute = function(context) {
-    context.getClient().getIRCClient().say(context, "Client.alert: " + context.getClient().alert);
+    context.getClient().say(context, "Client.alert: " + context.getClient().alert.join(", "));
     var results = [];
 
     function _add(channel) {
