@@ -39,24 +39,28 @@ function Version() {
     //whether or not to only allow this command if it's in a private message.
     this.isPmOnly = false;
 
+    // Base version
+    var version = require('../package.json').version;
+
     //Git API
-    this.git = new Git();
+    var git = new Git();
+    if (git.isRepo()) {
+        var gitSHA = git.getCommit().substring(0, 7);
+        var tagOrBranch = git.getBranch() || git.getTag();
+
+        if (gitSHA) {
+            version += "-".append(gitSHA);
+        }
+        if (tagOrBranch) {
+            version += "/".append(tagOrBranch);
+        }
+    }
+
+    this.version = version;
 }
 
 Version.prototype.execute = function(context) {
-    var version = require('../package.json').version;
-    var gitSHA = this.git.getCommit().substring(0, 7);
-    var gitBranch = this.git.getBranch();
-    var gitTag = this.git.getTag();
-
-    var tagOrBranch = (gitBranch || gitTag);
-
-    if(gitSHA !== "") {version = version + "-" + gitSHA;}
-    if(tagOrBranch !== "") {version = version + "/" + tagOrBranch;}
-    
-
-    context.getClient().say(context, "v"+version);
-
+    context.getClient().say(context, "v"+this.version);
     return true;
 };
 

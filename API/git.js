@@ -34,6 +34,7 @@ var log = bunyan.createLogger({
 require('shelljs/global');
 
 var getRepoInfo = require('git-repo-info');
+var isRepo = -1;
 
 function Git() {
     //TODO: things.
@@ -64,6 +65,13 @@ Git.prototype.getCommit = function() {
 Git.prototype.getBranch = function() {
     return getRepoInfo().branch;
 };
+
+Git.prototype.isRepo = function() {
+    if (isRepo === -1) {
+        isRepo = getRepoInfo._findRepo(".") !== null;
+    }
+    return isRepo;
+}
 
 /**
  * Get the current tag.
