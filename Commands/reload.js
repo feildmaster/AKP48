@@ -39,7 +39,7 @@ function Reload() {
 }
 
 Reload.prototype.execute = function(context) {
-    context.getClient().notice(context.getUser().getNick(), "Performing soft reload!");
+    context.getClient().getIRCClient().notice(context.getUser().getNick(), "Performing soft reload!");
     context.getClient().getClientManager().softReload();
     return true;
 };
