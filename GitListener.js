@@ -81,7 +81,7 @@ GitListener.prototype.startListening = function() {
 
     var self = this;
     this.githubListener.on("push:"+this.repository, function (ref, data) {
-        log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
+        log.info({head_commit_message: data.head_commit.message, ref: ref}, "GitHub Webhook received.");
         var branch = ref.substring(ref.lastIndexOf('/') + 1);
         if (self.branch === "*" || self.branch === branch) {
             self.handle(branch, data);
