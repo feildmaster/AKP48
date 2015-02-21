@@ -26,7 +26,7 @@ function Git() {
     this.helpText = "Allows controlling of the repository this bot is running off.";
 
     //usage message. only include the parameters. the command name will be automatically added.
-    this.usageText = "checkout <branch>";
+    this.usageText = "checkout <branch> | fetch";
 
     //ways to call this command.
     this.aliases = ['git'];
@@ -45,23 +45,37 @@ function Git() {
 }
 
 Git.prototype.execute = function(context) {
-    if (context.getArguments().length !== 2) {
-        return true;
+    var args = context.getArguments();
+    if (args.length < 1) {
+        return false;
     }
-    
-    var command = context.getArguments().splice(0, 1)[0].toLowerCase();
-    switch (command) {
+    var message = "";
+
+    switch (args.splice(0, 1)[0].toLowerCase()) {
         case "checkout":
-            var branch = context.getArguments().splice(0,1)[0];
+            if (args.length != 1) {
+                return false;
+            }
+            var branch = args.splice(0,1)[0];
             var nick = context.getUser().getNick();
             if (_git.fetch() && _git.checkout(branch)) {
-                context.getClient().getIRCClient().notice(nick, "Checked out ".append(branch));
+                message = "Checked out ".append(branch);
             } else {
-                context.getClient().getIRCClient().notice(nick, "Encountered an error while checking out ".append(branch));
+                message = "Encountered an error while checking out ".append(branch);
             }
             break;
+        case "fetch":
+            if (args.length) {
+                return false;
+            }
+            if (_git.fetch()) {
+                message = "Fetched head";
+            } else {
+                message = "Error while fetching head";
+            }
         default: return false;
     }
+    if (message) context.getClient().getIRCClient().notice(nick, message);
 
     return true;
 };
