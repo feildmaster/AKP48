@@ -82,9 +82,9 @@ Alert.prototype.execute = function(context) {
                 }
                 _add(arg);
             }
-            var message = results.join(", ");
-            context.getClient().getIRCClient().notice(context.nick, "Alert changes: " + (message || "none"));
         });
+        var message = results.join(", ");
+        context.getClient().getIRCClient().notice(context.nick, "Alert changes: " + (message || "none"));
     }
     return true;
 };
