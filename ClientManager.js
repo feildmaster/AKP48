@@ -79,27 +79,27 @@ ClientManager.prototype.addClient = function(client) {
 ClientManager.prototype.softReload = function() {
     //remove all sorts of cached objects from the cache
     //starting with all commands
-    require('fs').readdirSync(__dirname).forEach(function(file) {
+    require('fs').readdirSync(__dirname+"/Commands").forEach(function(file) {
         delete require.cache[require.resolve('./Commands'+file)];
     });
 
     //all api objects
-    require('fs').readdirSync(__dirname + '/./API/').forEach(function(file) {
+    require('fs').readdirSync(__dirname + '/API/').forEach(function(file) {
         delete require.cache[require.resolve('./API/' + file)];
     });
 
     //all AKP48 client objects
-    require('fs').readdirSync(__dirname + '/./Client/').forEach(function(file) {
+    require('fs').readdirSync(__dirname + '/Client/').forEach(function(file) {
         delete require.cache[require.resolve('./Client/' + file)];
     });
 
     //all regular expression objects
-    require('fs').readdirSync(__dirname + '/./Regex/').forEach(function(file) {
+    require('fs').readdirSync(__dirname + '/Regex/').forEach(function(file) {
         delete require.cache[require.resolve('./Regex/' + file)];
     });
 
     //all autoresponses
-    require('fs').readdirSync(__dirname + '/./AutoResponses').forEach(function(file) {
+    require('fs').readdirSync(__dirname + '/AutoResponses').forEach(function(file) {
         delete require.cache[require.resolve('./AutoResponses/' + file)];
     });
 
