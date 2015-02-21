@@ -116,6 +116,10 @@ ClientManager.prototype.softReload = function() {
     log.trace("Deleting config.json from require cache.")
     delete require.cache[require.resolve('./config.json')];
 
+    //the polyfill file
+    log.trace("Deleting polyfill.js from require cache.")
+    delete require.cache[require.resolve('./polyfill.js')];
+
     //and finally, the autoresponse and command loaders.
     log.trace("Deleting AutoResponses index from require cache.")
     delete require.cache[require.resolve('./AutoResponses/')];
@@ -163,6 +167,9 @@ ClientManager.prototype.reloadClients = function() {
 
         this.clients[i].initialize(this, true);
     };
+
+    log.info("Reinitializing polyfill.");
+    require('./polyfill.js')();
 
     log.info("Soft reload complete.");
 };
