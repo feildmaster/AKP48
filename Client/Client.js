@@ -427,6 +427,13 @@ module.exports.build = function build(options) {
     if(options.password) {
         client.setPassword(options.password);
     }
+    if (options.alert) {
+        options.alert.forEach(function(arg){
+            if (typeof arg === 'string') {
+                client.alert.push(arg);
+            }
+        });
+    }
     if(options.channels) {
         for (var i = 0; i < options.channels.length; i++) {
             client.addChannel(Channel.build(options.channels[i]));
