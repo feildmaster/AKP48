@@ -322,24 +322,23 @@ Client.prototype.initialize = function(clientManager, holdIRCClient) {
         }
     };
 
-    var self = this;
-
-    var ircMessageCallback = function(nick, to, text, message) {
-        //on each IRC message, run the command processor. If the command processor doesn't execute a command,
-        //run the auto response processor.
-        if(!self.getCommandProcessor().process(message, self)) {
-            self.getAutoResponseProcessor().process(message, self);
-        }
-    }
-
     if(!holdIRCClient) {
         //create the IRC client. This automatically connects, as well.
         this.ircClient = new irc.Client(this.getServer(), this.getNick(), { channels: channels, realName: this.getRealName(), password: password, userName: this.getUserName(), port: this.getPort(), autoRejoin: true, showErrors: true, encoding: 'utf8' });
     }
 
-    //attempt to remove eventListener, then add new one.
-    this.ircClient.removeListener('message', ircMessageCallback);
-    this.ircClient.on('message', ircMessageCallback);
+    //attempt to remove eventListeners, then add new one.
+    this.ircClient.removeAllListeners('message');
+
+    var self = this;
+    
+    this.ircClient.on('message', function(nick, to, text, message) {
+        //on each IRC message, run the command processor. If the command processor doesn't execute a command,
+        //run the auto response processor.
+        if(!self.getCommandProcessor().process(message, self)) {
+            self.getAutoResponseProcessor().process(message, self);
+        }
+    });
     
     var botID = this.botID;
     this.ircClient._speak = function(kind, target, text) {
