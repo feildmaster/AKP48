@@ -122,12 +122,19 @@ ClientManager.prototype.softReload = function() {
 ClientManager.prototype.reloadClients = function() {
     log.info("Reloading all clients.");
 
+    //require the code to refresh it
+    Client = require("./Client/Client");
+    Builder = require("./Client/Builder");
+
+    //assign a new builder from refreshed code
+    this.builder = new Builder();
+
     var tempIRCClient = null;
 
     //temporary array for clients
     var tempClients = [];
 
-    //for each client, create a temporary client and delete the running one.
+    //for each client, create a temporary client and replace the running one.
     for (i in this.clients) {
         if(this.clients.hasOwnProperty(i)) {
             //keep a reference to the IRC client, so it doesn't disconnect.
