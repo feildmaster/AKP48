@@ -35,6 +35,7 @@ require('shelljs/global');
 
 var config = require("./config.json");
 var GitHooks = require("githubhook");
+var Git = new (require("./API/git"))();
 
 var c = require("irc-colors");
 
@@ -120,10 +121,22 @@ GitListener.prototype.handle = function (branch, data) {
     var shutdown = true;
     
     log.info("Updating to branch: ".append(branch));
-    // Fetch, reset
-    if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
-        return log.error("Attempted git fetch & reset failed!");
+    
+    // Fetch
+    if(exec('git fetch').code) {
+        return log.error("Attempted git fetch failed!");
     }
+    // Reset
+    if (Git.getBranch() === branch) {
+        if (exec('git reset origin/'.append(branch).append(' --hard')).code) {
+            return log.error("Attempted git reset failed!");
+        }
+    } else {
+        if (exec('git checkout '.append(branch)).code) {
+            return log.error("Attempted git reset failed!");
+        }
+    }
+
     // TODO: npm install if *needed*
     exec('npm install');
 
