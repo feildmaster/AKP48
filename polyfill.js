@@ -121,6 +121,16 @@ function Polyfill() {
       return (count == 1 ? this : plural) 
     }
   }
+
+  if (!Object.prototype.forEach) {
+    Object.prototype.forEach = function(callback) {
+      if (typeof callback !== 'function') return;
+      var self = this;
+      Object.keys(this).forEach(function (key, id, array) {
+        callback(self[key], key, self);
+      });
+    }
+  }
 }
 
 module.exports = Polyfill;
