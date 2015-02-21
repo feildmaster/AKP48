@@ -39,26 +39,26 @@ function GitListener(clientmanager) {
     //listener
     this.githubListener = null;
 
-    var git = config.git;
+    var git = config.git || {};
 
     //port to listen on
-    this.port = (git && git.port) ? git.port : 4269;
+    this.port = git.port ? git.port : 4269;
 
     //path to listen at
-    this.path = (git && git.path) ? git.path : "/github/callback";
+    this.path = git.path ? git.path : "/github/callback";
 
     //secret to use
-    this.secret = (git && git.secret) ? git.secret : "";
+    this.secret = git.secret ? git.secret : "";
 
     //repo to listen for
-    this.repository = (git && git.repository) ? git.repository : "AKP48";
+    this.repository = git.repository ? git.repository : "AKP48";
 
     //branch to listen for
-    this.branch = (git && git.branch) ? git.branch : "master";
+    this.branch = git.branch ? git.branch : "master";
 
-    this.autoUpdate = (git && git.autoUpdate);
+    this.autoUpdate = git.autoUpdate;
 
-    if(git && git.listenForChanges) {
+    if(git.listenForChanges) {
         this.startListening();
     }
 }
@@ -79,16 +79,15 @@ GitListener.prototype.startListening = function() {
 
     this.githubListener.listen();
 
-    this.githubListener.on("push:"+this.repository, this.pushRepo);
+    var self = this;
+    this.githubListener.on("push:"+this.repository, function (ref, data) {
+        log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
+        var branch = ref.substring(ref.lastIndexOf('/') + 1);
+        if (self.branch === "*" || self.branch === branch) {
+            self.handle(branch, data);
+        }
+    });
 }
-
-GitListener.prototype.pushRepo = function (ref, data) {
-    log.info({head_commit_message: data.head_commit.message, compare_link: data.compare, ref: ref}, "GitHub Webhook received.");
-    var branch = ref.substring(ref.lastIndexOf('/') + 1);
-    if (this.branch === "*" || this.branch === branch) {
-        this.handle(branch, data);
-    }
-};
 
 GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
