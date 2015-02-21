@@ -55,7 +55,7 @@ Alert.prototype.execute = function(context) {
     function _remove(channel) {
         channel = channel || context.getChannel().name;
         var index = _index(channel);
-        context.getClient().getIRCClient().notice(context.nick, "Removing(" +index+"): " + channel;
+        context.getClient().getIRCClient().notice(context.nick, "Removing(" +index+"): " + channel);
         if (index) {
             context.getClient().alert.splice(index, 1);
             results.push("-"+channel);
