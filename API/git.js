@@ -88,10 +88,14 @@ Git.prototype.checkout = function(branch) {
     if (this.getBranch() === branch) {
         if (exec('git reset -q origin/'.append(branch).append(' --hard')).code) {
             return log.error("Attempted git reset failed!");
+        } else {
+            log.info("Reset to ".append(branch));
         }
     } else {
         if (exec('git checkout -q '.append(branch)).code) {
             return log.error("Attempted git reset failed!");
+        } else {
+            log.info("Checked out ".append(branch));
         }
     }
     return true;
