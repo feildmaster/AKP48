@@ -42,13 +42,13 @@ function Alert() {
 }
 
 Alert.prototype.execute = function(context) {
-    var alert = context.getClient().alert;
     var results = [];
+    
     function _add(channel) {
         channel = channel || context.getChannel();
         var index = _index(channel);
         if (!index) {
-            alert.push(channel);
+            context.getClient().alert.push(channel);
             results.push("+"+channel);
         }
     }
@@ -56,11 +56,12 @@ Alert.prototype.execute = function(context) {
         channel = channel || context.getChannel();
         var index = _index(channel);
         if (index) {
-            alert.splice(index, 1);
+            context.getClient().alert.splice(index, 1);
             results.push("-"+channel);
         }
     }
     function _index(channel) {
+        var alert = context.getClient().alert;
         for (i = 0; i < alert.length; i++) {
             if (alert[i] == channel) {
                 return i;
@@ -69,23 +70,20 @@ Alert.prototype.execute = function(context) {
         return 0;
     }
 
-    if (context.getArguments() == 0) {
-        context.getClient().getIRCClient().notice(context.nick, "Currently alerting: " + (alert.join(", ") || "none"));
+    if (context.getArguments().length == 0) {
+        context.getClient().getIRCClient().notice(context.nick, "Currently alerting: " + (context.getClient().alert.join(", ") || "none"));
     } else {
         context.getArguments().forEach(function (arg) {
-            if (arg === '+') {
-                _add();
-            } else if (arg === '-') {
-                _remove();
-            } else if (arg.startsWith("+")) {
-                _add(arg.substring(1));
-            } else if (arg.startsWith("-")) {
+            if (arg.startsWith("-")) {
                 _remove(arg.substring(1));
             } else {
+                if (arg.startsWith("+")) {
+                    arg = arg.substring(1);
+                }
                 _add(arg);
             }
             var message = results.join(", ");
-            context.getClient().getIRCClient().say(context.nick, "Alert changes: " + (message || "none"));
+            context.getClient().getIRCClient().notice(context.nick, "Alert changes: " + (message || "none"));
         });
     }
     return true;
