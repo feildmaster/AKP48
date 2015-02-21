@@ -49,7 +49,7 @@ function Version() {
 }
 
 Version.prototype.execute = function(context) {
-    if (context.getArguments().length && context.getUser().hasPermission("netop.channel.use")) {
+    if (context.getArguments().length && context.getUser().hasPermission("netop.command.use")) {
         context.getClient().getIRCClient().notice(context.getUser().getNick(), "Server: "+this.buildVersion());
     }
     
