@@ -120,6 +120,10 @@ ClientManager.prototype.softReload = function() {
     log.trace("Deleting polyfill.js from require cache.")
     delete require.cache[require.resolve('./polyfill.js')];
 
+    //the package.json file
+    log.trace("Deleting package.json from require cache.")
+    delete require.cache[require.resolve('./package.json')];
+
     //and finally, the autoresponse and command loaders.
     log.trace("Deleting AutoResponses index from require cache.")
     delete require.cache[require.resolve('./AutoResponses/')];
