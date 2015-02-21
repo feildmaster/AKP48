@@ -45,8 +45,8 @@ function Git() {
 }
 
 Git.prototype.execute = function(context) {
-    if (context.getArguments() !== 2) {
-        return false;
+    if (context.getArguments().length !== 2) {
+        return true;
     }
     
     var command = context.getArguments().splice(0, 1)[0].toLowerCase();
