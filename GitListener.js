@@ -114,8 +114,11 @@ GitListener.prototype.handle = function (branch, data) {
             client.getIRCClient().say(channel, message);
         });
     });
+
+    var changing_branch = branch !== Git.getBranch();
+    var update = this.autoUpdate && (data.commits.length !== 0 || changing_branch);
     
-    if (!this.autoUpdate) {
+    if (!update) {
         return;
     }
 
