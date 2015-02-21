@@ -147,17 +147,13 @@ ClientManager.prototype.reloadClients = function() {
 
             tempClient.ircClient = tempIRCClient;
 
-            //delete the client.
-            delete this.clients[i];
+            //initialize the new client
+            tempClient.initialize(this, true);
+
+            //replace the old client
+            this.clients[i] = tempClient;
         }
     };
-
-    //for each temporary client we created, initialize it.
-    for (i in tempClients) {
-        if(tempClients.hasOwnProperty(i)) {
-            tempClients[i].initialize(this, true);
-        }
-    }
 
     log.info("Soft reload complete.");
 };
