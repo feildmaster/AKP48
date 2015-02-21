@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: make this use various permissions, show only channels you have permissions for
 function Alert() {
     //the name of the command.
     this.name = "Alert";
