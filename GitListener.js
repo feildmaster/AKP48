@@ -128,7 +128,7 @@ GitListener.prototype.handle = function (branch, data) {
     log.info("Updating to branch: ".append(branch));
     
     // Fetch, Checkout
-    if (!(Git.fetch() && Git.checkout(branch))) {
+    if (!Git.checkout(branch)) {
         return;
     }
 

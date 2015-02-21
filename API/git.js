@@ -46,6 +46,8 @@ function Git() {
 Git.prototype.fetch = function() {
     if(exec('git fetch').code) {
         return log.error("Attempted git fetch failed!");
+    } else {
+        log.debug("Fetched");
     }
     return true;
 };
@@ -82,21 +84,20 @@ Git.prototype.getTag = function() {
 };
 
 Git.prototype.checkout = function(branch) {
-    if (!branch) {
+    if (!branch || !this.fetch()) {
         return;
     }
-    if (this.getBranch() === branch) {
-        if (exec('git reset -q origin/'.append(branch).append(' --hard')).code) {
-            return log.error("Attempted git reset failed!");
-        } else {
-            log.info("Reset to ".append(branch));
-        }
-    } else {
+    if (this.getBranch() !== branch) {
         if (exec('git checkout -q '.append(branch)).code) {
             return log.error("Attempted git reset failed!");
         } else {
-            log.info("Checked out ".append(branch));
+            log.debug("Checked out ".append(branch));
         }
+    }
+    if (exec('git reset -q origin/'.append(branch).append(' --hard')).code) {
+        return log.error("Attempted git reset failed!");
+    } else {
+        log.debug("Reset to ".append(branch));
     }
     return true;
 };

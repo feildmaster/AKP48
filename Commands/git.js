@@ -58,7 +58,7 @@ Git.prototype.execute = function(context) {
             }
             var branch = args.splice(0,1)[0];
             var nick = context.getUser().getNick();
-            if (_git.fetch() && _git.checkout(branch)) {
+            if (_git.checkout(branch)) {
                 message = "Checked out ".append(branch);
             } else {
                 message = "Encountered an error while checking out ".append(branch);
