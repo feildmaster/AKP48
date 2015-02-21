@@ -433,8 +433,6 @@ Client.prototype.destroy = function() {
     delete this.botID;
     delete this.alert;
 
-    this = null;
-
     delete this;
 }
 

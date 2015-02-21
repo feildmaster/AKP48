@@ -139,32 +139,29 @@ ClientManager.prototype.reloadClients = function() {
     //assign a new builder from refreshed code
     this.builder = new Builder();
 
-    //for each client, create a temporary client.
-    for (i in this.clients) {
-        if(this.clients.hasOwnProperty(i)) {
-            //keep a reference to the IRC client, so it doesn't disconnect.
-            var tempIRCClient = this.clients[i].getIRCClient();
+    for (var i = 0; i < this.clients.length; i++) {
+        //keep a reference to the IRC client, so it doesn't disconnect.
+        var tempIRCClient = this.clients[i].getIRCClient();
 
-            //build a new client using the values from this client.
-            var tempClient = Client.build({
-                nick: this.clients[i].getNick(),
-                realname: this.clients[i].getRealName(),
-                username: this.clients[i].getUserName(),
-                password: this.clients[i].getPassword(),
-                server: this.clients[i].getServer(),
-                port: this.clients[i].getPort(),
-                alert: this.clients[i].alert,
-                channels: this.clients[i].getChannels()
-            });
+        //build a new client using the values from this client.
+        var tempClient = Client.build({
+            nick: this.clients[i].getNick(),
+            realname: this.clients[i].getRealName(),
+            username: this.clients[i].getUserName(),
+            password: this.clients[i].getPassword(),
+            server: this.clients[i].getServer(),
+            port: this.clients[i].getPort(),
+            alert: this.clients[i].alert,
+            channels: this.clients[i].getChannels()
+        });
 
-            tempClient.ircClient = tempIRCClient;
+        tempClient.ircClient = tempIRCClient;
 
-            this.clients[i].destroy();
+        this.clients[i].destroy();
 
-            this.clients[i] = tempClient;
+        this.clients[i] = tempClient;
 
-            this.clients[i].initialize(this, true);
-        }
+        this.clients[i].initialize(this, true);
     };
 
     log.info("Soft reload complete.");
