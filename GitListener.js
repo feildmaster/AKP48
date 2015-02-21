@@ -111,7 +111,7 @@ GitListener.prototype.handle = function (branch, data) {
     if (!this.autoUpdate) {
         return;
     }
-    
+
     // TODO: stop only if needed!!
     var shutdown = true;
     
@@ -123,11 +123,14 @@ GitListener.prototype.handle = function (branch, data) {
     // TODO: npm install if *needed*
     exec('npm install');
 
-    if (shutdown) {
-        manager.shutdown("Restarting due to update.");
-    } else {
-        manager.softReload();
-    }
+
+    setTimeout(function(){
+        if (shutdown) {
+            manager.shutdown("Restarting due to update.");
+        } else {
+            manager.softReload();
+        }
+    }, 50);
 };
 
 module.exports = GitListener;
