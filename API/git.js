@@ -46,6 +46,7 @@ Git.prototype.fetch = function() {
     if(exec('git fetch').code) {
         return log.error("Attempted git fetch failed!");
     }
+    return true;
 };
 
 /**
@@ -85,6 +86,7 @@ Git.prototype.checkout = function(branch) {
             return log.error("Attempted git reset failed!");
         }
     }
+    return true;
 };
 
 module.exports = Git;

@@ -124,11 +124,10 @@ GitListener.prototype.handle = function (branch, data) {
     
     log.info("Updating to branch: ".append(branch));
     
-    // Fetch
-    Git.fetch();
-
-    // Reset
-    Git.checkout(branch);
+    // Fetch, Checkout
+    if (!(Git.fetch() && Git.checkout(branch))) {
+        return;
+    }
 
     // TODO: npm install if *needed*
     exec('npm install');
