@@ -300,7 +300,7 @@ Client.prototype.reloadProcessors = function() {
 /**
  * Initialize the Client by creating an IRC client.
  */
-Client.prototype.initialize = function(clientManager) {
+Client.prototype.initialize = function(clientManager, holdIRCClient) {
     //set the client manager.
     this.clientManager = clientManager;
 
@@ -322,29 +322,31 @@ Client.prototype.initialize = function(clientManager) {
         }
     };
 
-    //create the IRC client. This automatically connects, as well.
-    this.ircClient = new irc.Client(this.getServer(), this.getNick(), { channels: channels, realName: this.getRealName(), password: password, userName: this.getUserName(), port: this.getPort(), autoRejoin: true, showErrors: true, encoding: 'utf8' });
+    if(!holdIRCClient) {
+        //create the IRC client. This automatically connects, as well.
+        this.ircClient = new irc.Client(this.getServer(), this.getNick(), { channels: channels, realName: this.getRealName(), password: password, userName: this.getUserName(), port: this.getPort(), autoRejoin: true, showErrors: true, encoding: 'utf8' });
 
-    var botID = this.botID;
-    this.ircClient._speak = function(kind, target, text) {
-        // If the message is CTCP... filter it through
-        if (text.startsWith("\u0001")) {
-             irc.Client.prototype._speak.call(this, kind, target, text);
-        } else {
-            // prefix our messages with "botID"
-            irc.Client.prototype._speak.call(this, kind, target, botID + text);
-        }
-    };
+        var botID = this.botID;
+        this.ircClient._speak = function(kind, target, text) {
+            // If the message is CTCP... filter it through
+            if (text.startsWith("\u0001")) {
+                 irc.Client.prototype._speak.call(this, kind, target, text);
+            } else {
+                // prefix our messages with "botID"
+                irc.Client.prototype._speak.call(this, kind, target, botID + text);
+            }
+        };
 
-    var self = this;
+        var self = this;
 
-    this.ircClient.on('message', function(nick, to, text, message) {
-        //on each IRC message, run the command processor. If the command processor doesn't execute a command,
-        //run the auto response processor.
-        if(!self.getCommandProcessor().process(message, self)) {
-            self.getAutoResponseProcessor().process(message, self);
-        }
-    });
+        this.ircClient.on('message', function(nick, to, text, message) {
+            //on each IRC message, run the command processor. If the command processor doesn't execute a command,
+            //run the auto response processor.
+            if(!self.getCommandProcessor().process(message, self)) {
+                self.getAutoResponseProcessor().process(message, self);
+            }
+        });
+    }
 
     log.info("Client", this.getNick(), "on", this.getServer()+":"+this.getPort(), "initialized.");
 };

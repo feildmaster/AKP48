@@ -88,6 +88,11 @@ ClientManager.prototype.softReload = function() {
         delete require.cache[require.resolve('./API/' + file)];
     });
 
+    //all AKP48 client objects
+    require('fs').readdirSync(__dirname + '/./Client/').forEach(function(file) {
+        delete require.cache[require.resolve('./Client/' + file)];
+    });
+
     //all regular expression objects
     require('fs').readdirSync(__dirname + '/./Regex/').forEach(function(file) {
         delete require.cache[require.resolve('./Regex/' + file)];
@@ -116,9 +121,41 @@ ClientManager.prototype.softReload = function() {
  */
 ClientManager.prototype.reloadClients = function() {
     log.info("Reloading all clients.");
+
+    var tempIRCClient = null;
+
+    //temporary array for clients
+    var tempClients = [];
+
+    //for each client, create a temporary client and delete the running one.
     for (i in this.clients) {
-        this.clients[i].reloadProcessors();
+        //keep a reference to the IRC client, so it doesn't disconnect.
+        tempIRCClient = this.clients[i].getIRCClient();
+
+        //build a new client using the values from this client.
+        tempClient = Client.build({
+            nick: this.clients[i].getNick(),
+            realname: this.clients[i].getRealName(),
+            username: this.clients[i].getUserName(),
+            password: this.clients[i].getPassword(),
+            server: this.clients[i].getServer(),
+            port: this.clients[i].getPort(),
+            alert: this.clients[i].alert),
+            channels: this.clients[i].getChannels()
+        });
+
+        tempClient.ircClient = tempIRCClient;
+
+        //delete the client.
+        delete this.clients[i];
     };
+
+    //for each temporary client we created, initialize it.
+    for (i in tempClients) {
+        tempClients[i].initialize(this, true);
+    }
+
+    log.info("Soft reload complete.");
 };
 
 /**
