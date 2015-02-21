@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ var _git = new (require("./API/git"))();
+
 // TODO: only enable if we're in a git repo
 function Git() {
     //the name of the command.
@@ -46,12 +48,16 @@ Git.prototype.execute = function(context) {
     if (context.getArguments() !== 2) {
         return false;
     }
-    var command = context.getArguments()[0];
-    if (command.toLowerCase() === 'checkout') {
-        // TODO: checkout and shutdown
-    } else {
-        return false;
+    
+    var command = context.getArguments().splice(0, 1)[0].toLowerCase();
+    switch (command) {
+        case "checkout": 
+            _git.fetch();
+            _git.checkout(context.getArguments.splice(0,1)[0]);
+            break;
+        default: return false;
     }
+
     return true;
 };
 
