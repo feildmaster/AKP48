@@ -71,8 +71,9 @@ Alert.prototype.execute = function(context) {
         return -1;
     }
 
+    var nick = context.getUser().getNick();
     if (context.getArguments().length == 0) {
-        context.getClient().getIRCClient().notice(context.nick, "Currently alerting: " + (context.getClient().alert.join(", ") || "none"));
+        context.getClient().getIRCClient().notice(nick, "Currently alerting: " + (context.getClient().alert.join(", ") || "none"));
     } else {
         context.getArguments().forEach(function (arg) {
             if (arg.startsWith("-")) {
@@ -85,7 +86,7 @@ Alert.prototype.execute = function(context) {
             }
         });
         var message = results.join(", ");
-        context.getClient().getIRCClient().notice(context.nick, "Alert changes: " + (message || "none"));
+        context.getClient().getIRCClient().notice(nick, "Alert changes: " + (message || "none"));
     }
     return true;
 };

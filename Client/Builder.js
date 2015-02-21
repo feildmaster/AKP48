@@ -104,8 +104,6 @@ Builder.prototype.buildContext = function(message, client) {
         channel.addUser(user);
     }
 
-    context.nick = nick;
-
     //now we have a user.
     context.setUser(user);
 

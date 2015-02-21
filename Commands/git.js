@@ -53,10 +53,11 @@ Git.prototype.execute = function(context) {
     switch (command) {
         case "checkout":
             var branch = context.getArguments().splice(0,1)[0];
+            var nick = context.getUser().getNick();
             if (_git.fetch() && _git.checkout(branch)) {
-                context.getClient().getIRCClient().notice(context.nick, "Checked out ".append(branch));
+                context.getClient().getIRCClient().notice(nick, "Checked out ".append(branch));
             } else {
-                context.getClient().getIRCClient().notice(context.nick, "Encountered an error while checking out ".append(branch));
+                context.getClient().getIRCClient().notice(nick, "Encountered an error while checking out ".append(branch));
             }
             break;
         default: return false;
