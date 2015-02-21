@@ -30,6 +30,9 @@ var log = bunyan.createLogger({
     }]
 });
 
+// We need the shell
+require('shelljs/global');
+
 var config = require("./config.json");
 var GitHooks = require("githubhook");
 
