@@ -399,6 +399,45 @@ Client.prototype.shutdown = function(msg) {
     this.getIRCClient().disconnect(msg);
 };
 
+/**
+ * Destroys this client.
+ */
+Client.prototype.destroy = function() {
+    this.nick = null;
+    this.server = null;
+    this.port = null;
+    this.username = null;
+    this.realname = null;
+    this.password = null;
+    this.channels = null;
+    this.ircClient = null;
+    this.clientManager = null;
+    this.isTemporary = null;
+    this.commandProcessor = null;
+    this.autoResponseProcessor = null;
+    this.botID = null;
+    this.alert = null;
+
+    delete this.nick;
+    delete this.server;
+    delete this.port;
+    delete this.username;
+    delete this.realname;
+    delete this.password;
+    delete this.channels;
+    delete this.ircClient;
+    delete this.clientManager;
+    delete this.isTemporary;
+    delete this.commandProcessor;
+    delete this.autoResponseProcessor;
+    delete this.botID;
+    delete this.alert;
+
+    this = null;
+
+    delete this;
+}
+
 module.exports = Client;
 
 /**

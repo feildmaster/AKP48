@@ -80,36 +80,46 @@ ClientManager.prototype.softReload = function() {
     //remove all sorts of cached objects from the cache
     //starting with all commands
     require('fs').readdirSync(__dirname+"/Commands").forEach(function(file) {
+        log.trace("Deleting Commands/"+file+" from require cache.")
         delete require.cache[require.resolve('./Commands/'+file)];
     });
 
     //all api objects
     require('fs').readdirSync(__dirname + '/API/').forEach(function(file) {
+        log.trace("Deleting API/"+file+" from require cache.")
         delete require.cache[require.resolve('./API/' + file)];
     });
 
     //all AKP48 client objects
     require('fs').readdirSync(__dirname + '/Client/').forEach(function(file) {
+        log.trace("Deleting Client/"+file+" from require cache.")
         delete require.cache[require.resolve('./Client/' + file)];
     });
 
     //all regular expression objects
     require('fs').readdirSync(__dirname + '/Regex/').forEach(function(file) {
+        log.trace("Deleting Regex/"+file+" from require cache.")
         delete require.cache[require.resolve('./Regex/' + file)];
     });
 
     //all autoresponses
     require('fs').readdirSync(__dirname + '/AutoResponses').forEach(function(file) {
+        log.trace("Deleting AutoResponses/"+file+" from require cache.")
         delete require.cache[require.resolve('./AutoResponses/' + file)];
     });
 
     //the command processor, autoresponse processor, and configuration file
+    log.trace("Deleting CommandProcessor from require cache.")
     delete require.cache[require.resolve('./CommandProcessor')];
+    log.trace("Deleting AutoResponseProcessor from require cache.")
     delete require.cache[require.resolve('./AutoResponseProcessor')];
+    log.trace("Deleting config.json from require cache.")
     delete require.cache[require.resolve('./config.json')];
 
     //and finally, the autoresponse and command loaders.
+    log.trace("Deleting AutoResponses index from require cache.")
     delete require.cache[require.resolve('./AutoResponses/')];
+    log.trace("Deleting Commands index from require cache.")
     delete require.cache[require.resolve('./Commands/')];
 
     //now we can reload all the clients.
@@ -123,25 +133,20 @@ ClientManager.prototype.reloadClients = function() {
     log.info("Reloading all clients.");
 
     //require the code to refresh it
-    Client = require("./Client/Client");
-    Builder = require("./Client/Builder");
+    var Client = require("./Client/Client");
+    var Builder = require("./Client/Builder");
 
     //assign a new builder from refreshed code
     this.builder = new Builder();
 
-    var tempIRCClient = null;
-
-    //temporary array for clients
-    var tempClients = [];
-
-    //for each client, create a temporary client and replace the running one.
+    //for each client, create a temporary client.
     for (i in this.clients) {
         if(this.clients.hasOwnProperty(i)) {
             //keep a reference to the IRC client, so it doesn't disconnect.
-            tempIRCClient = this.clients[i].getIRCClient();
+            var tempIRCClient = this.clients[i].getIRCClient();
 
             //build a new client using the values from this client.
-            tempClient = Client.build({
+            var tempClient = Client.build({
                 nick: this.clients[i].getNick(),
                 realname: this.clients[i].getRealName(),
                 username: this.clients[i].getUserName(),
@@ -154,11 +159,11 @@ ClientManager.prototype.reloadClients = function() {
 
             tempClient.ircClient = tempIRCClient;
 
-            //initialize the new client
-            tempClient.initialize(this, true);
+            this.clients[i].destroy();
 
-            //replace the old client
             this.clients[i] = tempClient;
+
+            this.clients[i].initialize(this, true);
         }
     };
 
