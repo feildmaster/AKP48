@@ -380,6 +380,10 @@ Client.prototype.clone = function() {
         }
     };
 
+    this.alert.forEach(function (channel) {
+        client.alert.push(channel);
+    });
+
     //return the new client
     return client;
 };
