@@ -98,7 +98,8 @@ GitListener.prototype.handle = function (branch, data) {
     var message = c.pink("[GitHub]").append(" ").append(commits_string).append(" pushed to branch ").append(c.bold(branch)).append(" by ").append(data.pusher.name);
 
     for (var i = 0; i < data.commits.length && i < 3; i++) {
-        var commit_message = data.commits[i].message.substring(0, data.commits[i].message.indexOf("\n"));
+        var end = data.commits[i].message.indexOf("\n");
+        var commit_message = data.commits[i].message.substring(0, end === -1 ? null, end);
         message += "\n".append(data.commits[i].author.username).append(": ").append(commit_message);
     };
 
@@ -118,7 +119,7 @@ GitListener.prototype.handle = function (branch, data) {
     log.info("Updating to branch: ".append(branch));
     // Fetch, reset
     if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
-        log.error("Attempted git fetch & reset failed!");
+        return log.error("Attempted git fetch & reset failed!");
     }
     // TODO: npm install if *needed*
     exec('npm install');
