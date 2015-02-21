@@ -102,7 +102,7 @@ GitListener.prototype.handle = function (branch, data) {
 
     for (var i = 0; i < data.commits.length && i < 3; i++) {
         var end = data.commits[i].message.indexOf("\n");
-        var commit_message = data.commits[i].message.substring(0, end === -1 ? null : end);
+        var commit_message = data.commits[i].message.substring(0, end === -1 ? data.commits[i].message.length : end);
         message += "\n".append(data.commits[i].author.username).append(": ").append(commit_message);
     };
 
