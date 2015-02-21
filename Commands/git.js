@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- var _git = new (require("./API/git"))();
+ var _git = new (require("../API/git"))();
 
 // TODO: only enable if we're in a git repo
 function Git() {
