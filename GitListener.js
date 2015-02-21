@@ -118,6 +118,10 @@ GitListener.prototype.handle = function (branch, data) {
         });
     });
 
+    if (!Git.isRepo()) {
+        return;
+    }
+
     var changing_branch = branch !== Git.getBranch();
     var update = this.autoUpdate && (data.commits.length !== 0 || changing_branch);
     
