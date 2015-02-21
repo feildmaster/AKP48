@@ -140,7 +140,7 @@ ClientManager.prototype.reloadClients = function() {
             password: this.clients[i].getPassword(),
             server: this.clients[i].getServer(),
             port: this.clients[i].getPort(),
-            alert: this.clients[i].alert),
+            alert: this.clients[i].alert,
             channels: this.clients[i].getChannels()
         });
 
