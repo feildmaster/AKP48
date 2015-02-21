@@ -47,7 +47,7 @@ Alert.prototype.execute = function(context) {
     function _add(channel) {
         channel = channel || context.getChannel().name;
         var index = _index(channel);
-        if (!index) {
+        if (index === -1) {
             context.getClient().alert.push(channel);
             results.push("+"+channel);
         }
@@ -55,8 +55,7 @@ Alert.prototype.execute = function(context) {
     function _remove(channel) {
         channel = channel || context.getChannel().name;
         var index = _index(channel);
-        context.getClient().getIRCClient().notice(context.nick, "Removing(" +index+"): " + channel);
-        if (index) {
+        if (index !== -1) {
             context.getClient().alert.splice(index, 1);
             results.push("-"+channel);
         }
@@ -68,7 +67,7 @@ Alert.prototype.execute = function(context) {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
     if (context.getArguments().length == 0) {
