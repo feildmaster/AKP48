@@ -80,7 +80,7 @@ ClientManager.prototype.softReload = function() {
     //remove all sorts of cached objects from the cache
     //starting with all commands
     require('fs').readdirSync(__dirname+"/Commands").forEach(function(file) {
-        delete require.cache[require.resolve('./Commands'+file)];
+        delete require.cache[require.resolve('./Commands/'+file)];
     });
 
     //all api objects
