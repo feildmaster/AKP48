@@ -125,8 +125,23 @@ GitListener.prototype.handle = function (branch, data) {
         return;
     }
 
-    // TODO: stop only if needed!!
-    var shutdown = true;
+    var shutdown = changing_branch;
+    var npm = changing_branch;
+    var hot_files = ['server.js', 'GitListener.js', 'ClientManager.js'];
+
+    if (!shutdown) {
+        data.commits.some(function (commit) {
+            commit.modified.some(function (file) {
+                if (hot_files.indexOf(file) !== -1) {
+                    shutdown = true;
+                } else if (file === 'package.json') {
+                    npm = true;
+                }
+                return shutdown;
+            };
+            return shutdown;
+        });
+    }
     
     log.info("Updating to branch: ".append(branch));
     
@@ -135,8 +150,9 @@ GitListener.prototype.handle = function (branch, data) {
         return;
     }
 
-    // TODO: npm install if *needed*
-    exec('npm install');
+    if (npm) {
+        exec('npm install');
+    }
 
 
     setTimeout(function(){
