@@ -102,7 +102,7 @@ GitListener.prototype.handle = function (branch, data) {
     var message = c.pink("[GitHub]").append(" ").append(commits_string).append(" pushed to branch ").append(c.bold(branch)).append(" by ").append(data.pusher.name);
 
     for (var i = 0; i < data.commits.length && i < 3; i++) {
-        var _c = data.commits[i];
+        var _c = data.commits[data.commits.length - 1 - i];
         var _m = _c.message;
         var end = _m.indexOf("\n");
         var commit_message = _m.substring(0, end === -1 ? _m.length : end);
