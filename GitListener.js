@@ -94,12 +94,12 @@ GitListener.prototype.startListening = function() {
 GitListener.prototype.handle = function (branch, data) {
     var manager = this.manager;
     // Alert channels of update
-    var commits_string = "commit".pluralize(data.commits.length, "commits");
-    var message = c.pink("[GitHub]") + " " + data.commits.length + " " + commits_string +  " pushed to branch " + c.bold(branch) + " by "+data.pusher.name;
+    var commits_string = " commit".pluralize(data.commits.length).prepend(data.commits.length);
+    var message = c.pink("[GitHub]").append(" ").append(commits_string).append(" pushed to branch ").append(c.bold(branch)).append(" by ").append(data.pusher.name);
 
     for (var i = 0; i < data.commits.length && i < 3; i++) {
         var commit_message = data.commits[i].message.substring(0, data.commits[i].message.indexOf("\n"));
-        message += "\n" + data.commits[i].author.username + ": " + commit_message;
+        message += "\n".append(data.commits[i].author.username).append(": ").append(commit_message);
     };
 
     manager.clients.forEach(function (client) {
@@ -115,7 +115,7 @@ GitListener.prototype.handle = function (branch, data) {
     // TODO: stop only if needed!!
     var shutdown = true;
     
-    log.info("Updating to branch: " + branch);
+    log.info("Updating to branch: ".append(branch));
     // Fetch, reset
     if(exec('git fetch && git reset origin/' + branch + ' --hard').code !== 0) {
         log.error("Attempted git fetch & reset failed!");
